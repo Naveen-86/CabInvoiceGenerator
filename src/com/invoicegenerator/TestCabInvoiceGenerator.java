@@ -3,6 +3,8 @@ package com.invoicegenerator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+
 public class TestCabInvoiceGenerator {
 
     @Test
@@ -37,7 +39,7 @@ public class TestCabInvoiceGenerator {
 
 
     @Test
-    public void givenMultipleRides_shouldReturnSizeAndAverageFare(){
+    public void givenMultipleRidesshouldReturnSizeAndAverageFare(){
         CabInvoiceGenerator cabInvoiceGenerator = new CabInvoiceGenerator();
 
         Ride[] rides = { new Ride(20.0,4),
@@ -56,5 +58,34 @@ public class TestCabInvoiceGenerator {
         Assertions.assertEquals(1862,totalFare,0.0);
         Assertions.assertEquals(4,numberOfRides);
         Assertions.assertEquals(465,averageTotalFare,0.5);
+    }
+
+    @Test
+    public void whenGivenUserIdShouldReturnAllRidersInvoice() {
+        CabInvoiceGenerator firstUserInvoiceGenerator = new CabInvoiceGenerator(151270);
+        CabInvoiceGenerator secondUserInvoiceGenerator = new CabInvoiceGenerator(151271);
+
+        Ride[] firstUserRides = { new Ride(20.0,4),
+                new Ride(45.0,1),
+                new Ride(75.0,1),
+                new Ride(45.5,1)};
+
+        Ride[] secondUserRides = { new Ride(20.0,4),
+                new Ride(45.0,1),
+                new Ride(75.0,1)};
+
+        firstUserInvoiceGenerator.addUserRideRegister(firstUserInvoiceGenerator, firstUserRides);
+        secondUserInvoiceGenerator.addUserRideRegister(secondUserInvoiceGenerator, secondUserRides);
+
+        double[] firstUserTotalFare = firstUserInvoiceGenerator.getRideDetails(firstUserInvoiceGenerator.getUserId());
+        double[] secondUserTotalFare = secondUserInvoiceGenerator.getRideDetails(secondUserInvoiceGenerator.getUserId());
+
+        System.out.println("First User Total RidesFare : " + Arrays.toString(firstUserTotalFare));
+        System.out.println("Second User Total RidesFare : " + Arrays.toString(secondUserTotalFare));
+
+
+        Assertions.assertEquals("[465.5, 1862.0, 4.0]", Arrays.toString(firstUserTotalFare));
+        Assertions.assertEquals("[468.6666666666667, 1406.0, 3.0]", Arrays.toString(secondUserTotalFare));
+
     }
 }
